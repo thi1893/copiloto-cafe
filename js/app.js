@@ -1,7 +1,7 @@
 import {M, METHODS, PALETTES, R} from './data.js';
 import {$, clamp, fmtT, parseNum, r1, tf, uid} from './util.js';
 import {S, save} from './store.js';
-import {baseRatio, calc, ctxFromBrew, doseStep, makeCtx, ratioStep} from './recipe.js';
+import {baseRatio, calc, ctxFromBrew, doseStep, makeCtx, memKey, ratioStep} from './recipe.js';
 import {audio, buzz, keepAwake, snd, tone} from './feedback.js';
 import {UI, nav} from './ui.js';
 import {elapsedMs, stepIdx} from './engine.js';
@@ -29,10 +29,10 @@ function finishBrew(sec){
   const a=S.active;if(!a)return;
   const ctx=a.ctx,r=R[ctx.recipeId],c=a.calc,last=c.steps[stepIdx(a,elapsedMs(a))];
   const b={id:uid(),at:Date.now(),recipeId:r.id,method:r.method,
-    dose:ctx.dose,ratio:ctx.ratio,water:c.water,ice:c.ice,grinder:ctx.grinder,time:r.untimed?null:Math.round(sec),
-    judge:!!(last&&(last.drain||last.shot)),rating:0,taste:null,note:''};
+    dose:ctx.dose,ratio:ctx.ratio,water:c.water,ice:c.ice,grinder:ctx.grinder,time:r.untimed?null:(a.shotSec??Math.round(sec)),
+    judge:a.shotSec!=null||!!(last&&(last.drain||last.shot)),rating:0,taste:null,note:''};
   S.brews.unshift(b);if(S.brews.length>400)S.brews.length=400;
-  const m=S.mem[r.id]||(S.mem[r.id]={});m.dose=ctx.dose;m.ratio=ctx.ratio;m.g=ctx.grinder;
+  const k=memKey(r.id),m=S.mem[k]||(S.mem[k]={});m.dose=ctx.dose;m.ratio=ctx.ratio;m.g=ctx.grinder;
   S.methodLast[r.method]=r.id;S.active=null;save();keepAwake(false);snd.done();
   UI.done=b.id;UI.applied={};UI.noteOpen=false;nav.stack=[{v:'home'}];render();window.scrollTo(0,0);
 }
@@ -94,7 +94,7 @@ function render(){
 /* ---------- ações ---------- */
 function ask(o){UI.confirm=o;render()}
 function reapply(b){
-  const m=S.mem[b.recipeId]||(S.mem[b.recipeId]={}),ap=UI.applied;let g=b.grinder,rt=b.ratio;
+  const k=memKey(b.recipeId),m=S.mem[k]||(S.mem[k]={}),ap=UI.applied;let g=b.grinder,rt=b.ratio;
   for(const k in ap){if(ap[k].g!=null)g=ap[k].g;if(ap[k].ratio!=null)rt=ap[k].ratio}
   m.g=g;m.ratio=rt;save();
 }
@@ -113,9 +113,10 @@ const A={
   ratioToggle:()=>{UI.ratioOpen=!UI.ratioOpen;render()},
   start:()=>startBrew(),
   pause:()=>{const a=S.active;if(a.pausedAt){a.pausedTotal+=Date.now()-a.pausedAt;a.pausedAt=null;keepAwake(true)}else a.pausedAt=Date.now();save();render()},
-  restart:()=>{const a=S.active;Object.assign(a,{startedAt:Date.now(),pausedAt:null,pausedTotal:0,floor:0});UI.lastIdx=0;UI.lastTick='';save();snd.start();render()},
+  restart:()=>{const a=S.active;Object.assign(a,{startedAt:Date.now(),pausedAt:null,pausedTotal:0,floor:0,shotSec:null});UI.lastIdx=0;UI.lastTick='';save();snd.start();render()},
   next:()=>{const a=S.active,el=elapsedMs(a),i=stepIdx(a,el),st=a.calc.steps;
     if(a.pausedAt){a.pausedTotal+=Date.now()-a.pausedAt;a.pausedAt=null}
+    if(st[i].shot&&a.shotSec==null)a.shotSec=Math.floor(el/1000);
     if(i>=st.length-1||st[i+1].end){finishBrew(elapsedMs(a)/1000);return}
     a.floor=i+1;UI.lastIdx=stepIdx(a,elapsedMs(a));UI.flash=true;save();buzz(20);render()},
   cancel:()=>ask({title:'Cancelar preparo?',body:'O cronômetro para e este preparo não é salvo.',ok:'Continuar preparo',no:'Cancelar preparo',swap:1,onNo:()=>{S.active=null;save();keepAwake(false)}}),

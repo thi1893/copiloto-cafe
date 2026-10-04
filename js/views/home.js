@@ -28,7 +28,7 @@ export function vHome(){
     const m=M[id],rid=S.methodLast[id]||recipesOf(id)[0].id,ctx=makeCtx(rid),r=R[rid],c=calc(ctx);
     return`<div class="mcard" data-a="method" data-m="${id}" data-lp="${id}" role="button" tabindex="0" aria-label="${m.name}">
       ${ic(id)}<div class="mcard-n">${m.name}</div><div class="mcard-r">${esc(r.name)}</div>
-      <div class="mcard-d num">${r.fixed?r.doseNote:`${fmtN(ctx.dose)} → ${c.water}${c.ice?'+'+c.ice:''} g`}</div>
+      <div class="mcard-d num">${r.drink?esc(r.extra):r.fixed?r.doseNote:`${fmtN(ctx.dose)} → ${c.water}${c.ice?'+'+c.ice:''} g`}</div>
       <div class="mcard-c num">moedor ${ctx.grinder}</div>
       <button class="mini" data-a="prep" data-r="${rid}" aria-label="Preparar ${m.name}">Preparar</button></div>`;
   }).join('');

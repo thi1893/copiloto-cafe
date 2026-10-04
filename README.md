@@ -30,6 +30,7 @@ no armazenamento do app instalado (separado do Safari).
     icons/                  ícones do app
     js/app.js               ponto de entrada: preparo, navegação, render, ações
     js/data.js              métodos, receitas, diagnóstico, dados da máquina
+    js/drinks.js            bebidas com espresso e técnica de leite
     js/recipe.js            proporção, escala das etapas, moedor lembrado
     js/engine.js            cronômetro baseado no relógio
     js/store.js             estado salvo em localStorage
@@ -45,7 +46,8 @@ no armazenamento do app instalado (separado do Safari).
   `to` (peso acumulado em g) e `a` (ação). `grinder` é a faixa de posições do moedor.
 - Novo método: adicione em METHODS (js/data.js) e um ícone em MI (js/icons.js).
 - Nova tela: crie um arquivo em js/views/ e chame-o em render() (js/app.js).
-- Arquivo novo ou removido: atualize a lista FILES em sw.js.
+- Nova bebida: adicione um item em drinks() (js/drinks.js).
+- A cada publicação: mude o nome em CACHE (sw.js). Arquivo novo ou removido: atualize FILES.
 
 O app instalado busca a versão nova em segundo plano quando há internet;
 ela aparece na abertura seguinte.

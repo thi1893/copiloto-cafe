@@ -8,6 +8,7 @@ export const MI={
  french:'<path d="M12 14h22"/><path d="M14 14v24a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V14"/><path d="M23 14V6M20 6h6"/><path d="M14 22h18"/><path d="M32 19h3a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-3"/>',
  moka:'<path d="M16 7h14l-2 14H18z"/><path d="M17 21h12"/><path d="M18 23h10l3 17H15z"/><path d="M16 7l-3-2"/><path d="M30 10h3.5l-1.5 9"/>',
  coldbrew:'<path d="M15 7h18v5H15z"/><path d="M14 12h20v26a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4z"/><path d="M14 22q2.5-2 5 0t5 0t5 0t5 0"/>',
+ drinks:'<path d="M14 9h20l-2.4 29.3a3 3 0 0 1-3 2.7h-9.2a3 3 0 0 1-3-2.7z"/><path d="M15 21h18"/><path d="M19 15.5c1.7-1.6 3.3-1.6 5 0s3.3 1.6 5 0"/>',
  espresso:'<path d="M12 21h22v7a8 8 0 0 1-8 8h-6a8 8 0 0 1-8-8z"/><path d="M34 23h2.5a3.5 3.5 0 0 1 0 7H33"/><path d="M8 41h30"/><path d="M19 8c-2 3 2 5 0 8M26 8c-2 3 2 5 0 8"/>'
 };
 export const UIC={

@@ -1,8 +1,11 @@
+import {drinks} from './drinks.js';
+
 /* Métodos, receitas e conhecimento do Guia do Barista.
    Para adicionar uma receita, inclua um item em RECIPES. */
 export const METHODS=[
   {id:'v60',name:'V60',sub:'Hario · coado'},
   {id:'espresso',name:'Espresso',sub:'Tramontina by Breville Express'},
+  {id:'drinks',name:'Bebidas',sub:'Clássicos com espresso'},
   {id:'kalita',name:'Kalita Wave',sub:'Coado · fundo plano'},
   {id:'chemex',name:'Chemex',sub:'Coado · papel grosso'},
   {id:'aeropress',name:'AeroPress',sub:'Imersão e pressão'},
@@ -88,6 +91,8 @@ export const RECIPES=[
   steps:[{t:0,shot:1,a:'Extraia',n:'Pare manualmente pelo peso'}],
   tips:['Bebida entre 70 e 85 g.']}
 ];
+RECIPES.push(...drinks(PREP_ESP));
+
 export const TASTE={
  filter:[
   {k:'eq',l:'Equilibrado',a:'Doce, limpo, final longo. Mantenha tudo como está.'},

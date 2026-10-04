@@ -15,12 +15,14 @@ export function line(r,dose,water,ice){
   if(r.fixed)return`${r.doseNote} → ${r.waterNote}`;
   return`${fmtN(dose)} g → ${water} g${ice?` + ${ice} g gelo`:''}`;
 }
+/* Bebidas guardam dose, proporção e moedor na memória do espresso base. */
+export const memKey=rid=>R[rid].base||rid;
 export function grinderFor(rid){
-  const r=R[rid],m=S.mem[rid]||{},g=m.g??(m.grind&&m.grind._);
+  const r=R[rid],m=S.mem[memKey(rid)]||{},g=m.g??(m.grind&&m.grind._);
   return g??r.gStart??Math.round((r.grinder[0]+r.grinder[1])/2);
 }
 export function makeCtx(rid,o={}){
-  const r=R[rid],m=S.mem[rid]||{};
+  const r=R[rid],m=S.mem[memKey(rid)]||{};
   const dose=r.fixed?r.coffee:(o.dose??m.dose??r.coffee);
   const ratio=r.fixed?baseRatio(r):(o.ratio??m.ratio??baseRatio(r));
   return{recipeId:rid,dose,ratio,grinder:o.grinder??grinderFor(rid)};

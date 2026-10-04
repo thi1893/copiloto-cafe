@@ -1,30 +1,32 @@
 /* Service worker: guarda o app inteiro no aparelho para funcionar sem internet.
    Responde do cache na hora e, quando há rede, busca a versão nova em segundo plano;
-   ela passa a valer na próxima abertura. Ao criar ou remover arquivos, atualize FILES. */
-const CACHE = 'copiloto-cafe-v1';
+   ela passa a valer na próxima abertura. A cada publicação, mude o nome em CACHE (o app
+   então baixa todos os arquivos de uma vez); ao criar ou remover arquivos, atualize FILES. */
+const CACHE = 'copiloto-cafe-75a346d8';
 const FILES = [
   "./",
   "index.html",
   "manifest.webmanifest",
   "css/app.css",
+  "js/app.js",
   "js/data.js",
-  "js/icons.js",
-  "js/util.js",
-  "js/store.js",
-  "js/recipe.js",
-  "js/feedback.js",
-  "js/ui.js",
+  "js/drinks.js",
   "js/engine.js",
-  "js/views/home.js",
-  "js/views/method.js",
-  "js/views/prep.js",
+  "js/feedback.js",
+  "js/icons.js",
+  "js/recipe.js",
+  "js/store.js",
+  "js/ui.js",
+  "js/util.js",
   "js/views/brew.js",
+  "js/views/chrome.js",
   "js/views/done.js",
   "js/views/history.js",
+  "js/views/home.js",
+  "js/views/method.js",
   "js/views/onboard.js",
+  "js/views/prep.js",
   "js/views/sheets.js",
-  "js/views/chrome.js",
-  "js/app.js",
   "icons/icon-180.png",
   "icons/icon-192.png",
   "icons/icon-512.png",
@@ -32,7 +34,7 @@ const FILES = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

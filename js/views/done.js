@@ -33,7 +33,7 @@ export function vDone(){
     <div class="done-k">완성</div>
     <h1 class="h1" style="margin-top:6px">Café pronto</h1>
     <p class="d-sum">${m.name} · ${esc(r.name)}<br><span class="num">${line(r,b.dose,b.water,b.ice)} · moedor ${b.grinder}</span></p>
-    ${b.time!=null?`<div class="d-time"><b class="num">${tf(r,b.time)}</b><span>tempo total</span></div>`:''}
+    ${b.time!=null?`<div class="d-time"><b class="num">${tf(r,b.time)}</b><span>${r.espresso?'extração':'tempo total'}</span></div>`:''}
     ${verdict}
     <section class="sec"><div class="sec-h"><span class="sec-t">como ficou?</span><span class="sec-t faint">opcional</span></div>
       <div class="rate" role="radiogroup" aria-label="Nota">${[1,2,3,4,5].map(v=>`<button data-a="rate" data-v="${v}" role="radio" aria-checked="${b.rating===v}" aria-label="${RATE_L[v]}"><i class="${b.rating>=v?'on':''}"></i></button>`).join('')}<span>${RATE_L[b.rating]||''}</span></div>
