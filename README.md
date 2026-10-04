@@ -39,7 +39,7 @@ no armazenamento do app instalado (separado do Safari).
     js/icons.js             ícones em SVG
     js/scenes.js            ilustrações das etapas (recipiente + ação)
     js/util.js              formatação
-    js/views/               uma tela por arquivo
+    js/views/               uma tela por arquivo (guide.js: guias animados de leite e latte art)
 
 ## Como mudar
 

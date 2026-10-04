@@ -5,6 +5,7 @@ import {baseRatio, calc, ctxFromBrew, doseStep, makeCtx, memKey, ratioStep} from
 import {audio, audioSession, audioStarted, buzz, chime, keepAwake, quiet, snd} from './feedback.js';
 import {UI, nav} from './ui.js';
 import {elapsedMs, pourState, stepIdx} from './engine.js';
+import {vGuide} from './views/guide.js';
 import {vHome} from './views/home.js';
 import {vMethod} from './views/method.js';
 import {vPrep} from './views/prep.js';
@@ -93,7 +94,7 @@ function render(){
   else{
     if(top.v==='prep'&&!UI.ctx)nav.stack=[{v:'home'}];
     const t=nav.stack[nav.stack.length-1];
-    html=t.v==='history'?vHistory():t.v==='method'?vMethod(t.m):t.v==='prep'?vPrep():vHome();
+    html=t.v==='history'?vHistory():t.v==='guide'?vGuide(t.g):t.v==='method'?vMethod(t.m):t.v==='prep'?vPrep():vHome();
     tabs=['home','history'].includes(t.v);
   }
   const ae=document.activeElement,keep=ae&&ae.id&&ae.tagName==='INPUT'?{id:ae.id,s:ae.selectionStart}:null;
@@ -113,6 +114,8 @@ const A={
   tab:d=>tab(d.t),back:()=>back(),
   settings:()=>{UI.sheet={t:'settings'};render()},closeSheet:()=>{UI.sheet=null;render()},
   method:d=>go('method',{m:d.m}),
+  guide:d=>go('guide',{g:d.g}),
+  gDrink:d=>{UI.gDrink=d.v;render()},
   prep:d=>openPrep(makeCtx(d.r)),
   repeat:d=>{const b=S.brews.find(x=>x.id===d.id);UI.sheet=null;if(b)openPrep(ctxFromBrew(b))},
   fav:d=>{const i=S.favs.indexOf(d.m);if(i>=0)S.favs.splice(i,1);else S.favs.push(d.m);save();render()},

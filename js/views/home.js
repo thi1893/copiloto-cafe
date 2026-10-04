@@ -1,6 +1,7 @@
 import {M, METHODS, R, recipesOf} from '../data.js';
 import {ic, icFor, ui} from '../icons.js';
 import {drinkRows} from './drinks.js';
+import {guideRows} from './guide.js';
 import {dayLabel, dotsTxt, esc, fmtN, hm, tf} from '../util.js';
 import {S} from '../store.js';
 import {calc, grinderFor, line, makeCtx} from '../recipe.js';
@@ -50,5 +51,6 @@ export function vHome(){
     ${others?`<section class="sec"><div class="sec-h"><span class="sec-t">explorar métodos</span></div><div class="list">${others}</div></section>`:''}
     <section class="sec"><div class="sec-h"><span class="sec-t">bebidas</span><button class="link" data-a="method" data-m="drinks">leite e técnica</button></div><div class="list">${drinkRows()}</div></section>
     <section class="sec"><div class="sec-h"><span class="sec-t">bebidas doces</span></div><div class="list">${drinkRows(true)}</div></section>
+    <section class="sec"><div class="sec-h"><span class="sec-t">técnica</span></div><div class="list">${guideRows()}</div></section>
   </div>`;
 }
