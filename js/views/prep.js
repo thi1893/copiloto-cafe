@@ -4,6 +4,7 @@ import {clamp, esc, fmtN, fmtR, fmtT} from '../util.js';
 import {S} from '../store.js';
 import {baseRatio, calc, gRange} from '../recipe.js';
 import {UI} from '../ui.js';
+import {scene} from '../scenes.js';
 
 export function gScale(r,g){
   const p=v=>(clamp(v,1,60)-1)/59*100,[lo,hi]=r.grinder;
@@ -18,7 +19,7 @@ export function vPrep(){
   const fixedVal=(v,unit,cls='')=>`<div class="stp"><span class="sp"></span><div class="val"><span class="fixed num ${cls}">${v}</span><span class="unit">${unit}</span></div><span class="sp"></span></div>`;
   const waterRow=`<div class="prow"><div class="pl">${r.espresso?'Bebida':'Água'}<small>${r.espresso?'na xícara':r.ice?'quente':'total'}</small></div>
       <div class="stp"><span class="sp"></span><div class="val"><input id="in-water" class="num dyn" data-c="water" value="${c.water}" inputmode="numeric" aria-label="Água em gramas" enterkeyhint="done"><span class="unit">g</span></div><span class="sp"></span></div></div>`;
-  const steps=c.steps.filter(s=>!s.end).map(s=>`<li><span class="st-t num">${s.t!=null?fmtT(s.t):'—'}</span><span class="st-a">${esc(s.a)}</span><span class="st-v num">${s.to!=null?s.to+' g':s.add!=null?'+'+s.add+' g':s.q!=null?s.q+' '+s.unit:''}</span></li>`).join('');
+  const steps=c.steps.filter(s=>!s.end).map(s=>`<li><div class="st-pic">${scene(r,s,'still')}</div><div><div class="st-a">${esc(s.a)}</div>${s.n?`<div class="st-n">${esc(s.n)}</div>`:''}</div><div class="st-r"><span class="st-v num">${s.to!=null?s.to+' g':s.add!=null?'+'+s.add+' g':s.q!=null?s.q+' '+s.unit:''}</span>${s.t!=null?`<span class="st-t num">${fmtT(s.t)}</span>`:''}</div></li>`).join('');
   const tips=[...(r.gMax?[`Esta receita pede moagem mais grossa do que a posição 60 entrega com a mó interna no ${INNER_BURR}. Se drenar devagar ou amargar, suba a mó interna; as posições do espresso mudam junto.`]:[]),...(r.time?[`${r.espresso?'Extração em '+r.exp:'Fim em '+fmtT(r.time[0])+'–'+fmtT(r.time[1])}. Fora disso, o app sugere o ajuste do moedor no final.`]:[]),...(r.tips||[]),'A posição do moedor é ponto de partida: cada café varia de 2 a 4 posições.','Ao trocar de posição, moa e descarte 2–3 g para limpar o pó antigo.'];
   const prep=[`${r.fixed?r.doseNote:fmtN(ctx.dose)+' g de café'} moído na posição ${ctx.grinder}`,
     r.espresso?`Temperatura ${r.temp.toLowerCase()} · pré-infusão ${r.preinf.toLowerCase()}`:`${r.fixed?'Água '+r.waterNote:c.water+' g de água'} · ${r.temp}`,

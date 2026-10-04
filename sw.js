@@ -2,7 +2,7 @@
    Responde do cache na hora e, quando há rede, busca a versão nova em segundo plano;
    ela passa a valer na próxima abertura. A cada publicação, mude o nome em CACHE (o app
    então baixa todos os arquivos de uma vez); ao criar ou remover arquivos, atualize FILES. */
-const CACHE = 'copiloto-cafe-54e662ad';
+const CACHE = 'copiloto-cafe-bfead436';
 const FILES = [
   "./",
   "index.html",
@@ -15,6 +15,7 @@ const FILES = [
   "js/feedback.js",
   "js/icons.js",
   "js/recipe.js",
+  "js/scenes.js",
   "js/store.js",
   "js/ui.js",
   "js/util.js",

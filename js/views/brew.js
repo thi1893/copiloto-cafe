@@ -4,6 +4,7 @@ import {esc, fmtT, tf} from '../util.js';
 import {S} from '../store.js';
 import {UI} from '../ui.js';
 import {elapsedMs, stepIdx} from '../engine.js';
+import {scene} from '../scenes.js';
 
 export function vBrew(){
   const a=S.active,r=R[a.ctx.recipeId],m=M[r.method],st=a.calc.steps,el=elapsedMs(a),i=stepIdx(a,el),s=st[i],n=st[i+1],paused=!!a.pausedAt;
@@ -34,7 +35,7 @@ export function vBrew(){
   const fl=UI.flash;UI.flash=false;
   return`<div class="brew" role="main">
     <div class="b-top"><button class="ibtn edge" data-a="cancel" aria-label="Cancelar preparo">${ui('close')}</button><div class="b-title">${m.name} · ${esc(r.name)}</div><div class="b-step num">${pos}/${vis.length}</div></div>
-    <div class="b-main ${fl?'flash':''}" aria-live="polite">${main}${timer}${dots}${next}</div>
+    <div class="b-main ${fl?'flash':''}" aria-live="polite">${scene(r,s,'b-scene')}${main}${timer}${dots}${next}</div>
     ${noTimer?'':'<div class="b-bar"><i id="bBar"></i></div>'}
     <div class="b-actions">${actions}</div>
   </div>`;

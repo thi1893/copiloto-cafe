@@ -37,6 +37,7 @@ no armazenamento do app instalado (separado do Safari).
     js/ui.js                estado de interface (não salvo)
     js/feedback.js          som, vibração, tela ligada
     js/icons.js             ícones em SVG
+    js/scenes.js            ilustrações das etapas (recipiente + ação)
     js/util.js              formatação
     js/views/               uma tela por arquivo
 
