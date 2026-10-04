@@ -32,7 +32,8 @@ export const snd={
   step(){if(S.prefs.sound)chime();buzz(30)},
   tick(){if(S.prefs.sound)tone(1567,.1,.22)},
   done(){if(S.prefs.sound){tone(659,.5,.42);tone(880,.5,.42,.14);tone(1318.5,.9,.4,.28)}buzz(60)},
-  start(){if(S.prefs.sound)tone(1046.5,.3,.3)}
+  start(){if(S.prefs.sound)tone(1046.5,.3,.3)},
+  halt(){if(S.prefs.sound)tone(587.3,.28,.32)} // fim da janela de despejo: pare de despejar
 };
 export function buzz(ms){if(S.prefs.vibe&&navigator.vibrate)try{navigator.vibrate(ms)}catch(e){}}
 export async function keepAwake(on){try{if(on&&S.prefs.wake&&'wakeLock'in navigator){if(!WL){WL=await navigator.wakeLock.request('screen');WL.addEventListener('release',()=>{WL=null})}}else if(!on&&WL){await WL.release();WL=null}}catch(e){}}

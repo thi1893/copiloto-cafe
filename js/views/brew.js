@@ -3,16 +3,20 @@ import {ui} from '../icons.js';
 import {esc, fmtT, tf} from '../util.js';
 import {S} from '../store.js';
 import {UI} from '../ui.js';
-import {elapsedMs, stepIdx} from '../engine.js';
+import {elapsedMs, pourState, stepIdx} from '../engine.js';
 import {scene} from '../scenes.js';
 
 export function vBrew(){
   const a=S.active,r=R[a.ctx.recipeId],m=M[r.method],st=a.calc.steps,el=elapsedMs(a),i=stepIdx(a,el),s=st[i],n=st[i+1],paused=!!a.pausedAt;
   const vis=st.filter(x=>!x.end),pos=Math.min(i+1,vis.length);
-  let prevTo=0;for(let j=i-1;j>=0;j--){if(st[j].to!=null){prevTo=st[j].to;break}}
+  const prevTo=s.from||0,ps=pourState(s,el),waiting=!!ps&&!ps.pouring;
   let main;
   if(s.shot)main=`<div class="b-label">pare em</div><div class="b-big num">${s.to}<small>g</small></div><div class="b-sub">${esc(s.n||'')} · pare entre <b>${r.exp}</b></div>`;
-  else if(s.to!=null)main=`<div class="b-label">${esc(s.a)} · despeje até</div><div class="b-big num">${s.to}<small>g</small></div><div class="b-sub"><b class="num">+${s.to-prevTo} g</b>${s.n?' · '+esc(s.n):''}</div>`;
+  else if(s.to!=null)main=`<div class="b-label">${esc(s.a)} · ${waiting?'pare de despejar':'despeje até'}</div><div class="b-big num">${s.to}<small>g</small></div><div class="b-sub"><b class="num">+${s.to-prevTo} g</b>${s.n?' · '+esc(s.n):''}</div>
+    ${ps?`<div id="bPour" class="b-pour ${waiting?'wait':''}" aria-live="off">
+      <div class="bp-c"><span class="bp-l">${waiting?(n&&n.t!=null?'aguarde':'despejo concluído'):'despeje por mais'}</span><b class="num" id="bpLeft">${waiting?(n&&n.t!=null?fmtT(Math.ceil(n.t-el/1000)):'✓'):fmtT(ps.left)}</b></div>
+      <div class="bp-c r"><span class="bp-l">${waiting?'na balança':'na balança agora'}</span><b class="num acc" id="bpNow">${waiting?'':'≈ '}${ps.now} g</b></div>
+      <div class="bp-bar"><i id="bpBar" style="width:${(ps.k*100).toFixed(1)}%"></i></div></div>`:''}`;
   else if(s.q!=null)main=`<div class="b-label">${esc(s.a)}</div><div class="b-big num">${s.q}<small>${s.unit}</small></div><div class="b-sub">${esc(s.n||'')}</div>`;
   else if(s.add!=null)main=`<div class="b-label">${esc(s.a)}</div><div class="b-big num">+${s.add}<small>g</small></div><div class="b-sub">Toque em Feito ao terminar</div>`;
   else if(s.drain)main=`<div class="b-label">drenagem</div><div class="b-act">Aguarde a água passar</div><div class="b-sub">${r.time?`Esperado: fim em <b>${fmtT(r.time[0])}–${fmtT(r.time[1])}</b>`:esc(s.n||'')}</div>`;
@@ -24,7 +28,7 @@ export function vBrew(){
     next=`<div class="b-next"><span class="l">depois</span><span class="v">${nv}${timed?` <span id="bIn" class="in">em ${fmtT((n.t*1000-el)/1000+.999)}</span>`:''}</span></div>`;
   }else if(!n&&(s.drain||s.manual||s.shot)&&!r.untimed){next=''}
   const noTimer=r.untimed||(r.drink&&!s.shot);
-  const timer=noTimer?(a.shotSec!=null?`<div class="b-tl" style="margin-top:26px">extração em ${a.shotSec} s</div>`:''):`<div id="bTime" class="b-time num ${paused?'paused':''}">${tf(r,el/1000)}</div><div class="b-tl">${paused?'pausado':'tempo total'}</div>`;
+  const timer=noTimer?(a.shotSec!=null?`<div class="b-tl" style="margin-top:26px">extração em ${a.shotSec} s</div>`:''):`<div id="bTime" class="b-time num ${ps?'sm':''} ${paused?'paused':''}">${tf(r,el/1000)}</div><div class="b-tl">${paused?'pausado':'tempo total'}</div>`;
   const dots=vis.length>1?`<div class="b-dots" aria-label="Etapa ${pos} de ${vis.length}">${vis.map((_,j)=>`<i class="${j<i?'on':j===i?'cur':''}"></i>`).join('')}</div>`:'';
   let actions;
   if(paused)actions=`<div class="b-row"><button class="btn ghost sq" data-a="restart" aria-label="Reiniciar">${ui('reset')}</button><button class="btn" data-a="pause">${ui('play')}Continuar</button></div>`;
@@ -35,7 +39,7 @@ export function vBrew(){
   const fl=UI.flash;UI.flash=false;
   return`<div class="brew${fl?' pulse':''}" role="main">
     <div class="b-top"><button class="ibtn edge" data-a="cancel" aria-label="Cancelar preparo">${ui('close')}</button><div class="b-title">${m.name} · ${esc(r.name)}</div><div class="b-step num">${pos}/${vis.length}</div></div>
-    <div class="b-main ${fl?'flash':''}" aria-live="polite">${scene(r,s,'b-scene')}${main}${timer}${dots}${next}</div>
+    <div class="b-main ${fl?'flash':''}" aria-live="polite">${scene(r,waiting?{...s,p:'wait'}:s,'b-scene'+(ps?' sm':''))}${main}${timer}${dots}${next}</div>
     ${noTimer?'':'<div class="b-bar"><i id="bBar"></i></div>'}
     <div class="b-actions">${actions}</div>
   </div>`;

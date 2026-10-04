@@ -4,7 +4,7 @@ import {S, save} from './store.js';
 import {baseRatio, calc, ctxFromBrew, doseStep, makeCtx, memKey, ratioStep} from './recipe.js';
 import {audio, audioSession, audioStarted, buzz, chime, keepAwake, quiet, snd} from './feedback.js';
 import {UI, nav} from './ui.js';
-import {elapsedMs, stepIdx} from './engine.js';
+import {elapsedMs, pourState, stepIdx} from './engine.js';
 import {vHome} from './views/home.js';
 import {vMethod} from './views/method.js';
 import {vPrep} from './views/prep.js';
@@ -40,7 +40,16 @@ function tick(){
   const a=S.active;if(!a)return;
   const el=elapsedMs(a),st=a.calc.steps,i=stepIdx(a,el),s=st[i],r=R[a.ctx.recipeId];
   if(s.end){finishBrew(s.t);return}
-  if(i!==UI.lastIdx){UI.lastIdx=i;UI.flash=true;if(!a.pausedAt)snd.step();render();return}
+  if(i!==UI.lastIdx){UI.lastIdx=i;UI.lastPour=i+':1';UI.flash=true;if(!a.pausedAt)snd.step();render();return}
+  const ps=pourState(s,el);
+  if(ps){ // ritmo do despejo: tempo que falta e peso esperado agora
+    const key=i+':'+(ps.pouring?1:0);
+    if(key!==UI.lastPour){const ended=UI.lastPour===i+':1'&&!ps.pouring;UI.lastPour=key;if(ended){if(!a.pausedAt)snd.halt();render();return}}
+    const nx=st[i+1],L=$('#bpLeft'),N=$('#bpNow'),B=$('#bpBar');
+    if(L)L.textContent=ps.pouring?fmtT(ps.left):(nx&&nx.t!=null?fmtT(Math.ceil(nx.t-el/1000)):'✓');
+    if(N)N.textContent=(ps.pouring?'≈ ':'')+ps.now+' g';
+    if(B)B.style.width=(ps.k*100).toFixed(1)+'%';
+  }
   const tEl=$('#bTime');if(tEl)tEl.textContent=tf(r,el/1000);
   const n=st[i+1],inEl=$('#bIn');
   if(n&&n.t!=null&&inEl&&!(s.manual||s.drain||s.shot)){
