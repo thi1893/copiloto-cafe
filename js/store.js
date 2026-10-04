@@ -4,7 +4,7 @@ export function fresh(){return{v:1,onboarded:false,favs:['v60','espresso'],brews
 export function load(){
   try{const s=Object.assign(fresh(),JSON.parse(localStorage.getItem(KEY)||'null')||{});s.prefs=Object.assign(fresh().prefs,s.prefs||{});
     if(s.gcal!==2){for(const k in s.mem){delete s.mem[k].g;delete s.mem[k].grind}s.gcal=2} // moedor recalibrado
-    if(!s.drinksAdded){if(s.onboarded&&!s.favs.includes('drinks'))s.favs.push('drinks');s.drinksAdded=1} // seção nova entra na tela inicial uma vez
+    if(s.drinksAdded!==2){if(s.drinksAdded===1)s.favs=s.favs.filter(f=>f!=='drinks');s.drinksAdded=2} // bebidas têm seção própria no Início; sai o cartão automático
     return s}
   catch(e){return fresh()}
 }

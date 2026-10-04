@@ -1,5 +1,6 @@
 import {M, METHODS, R, recipesOf} from '../data.js';
-import {ic, ui} from '../icons.js';
+import {ic, icFor, ui} from '../icons.js';
+import {drinkRows} from './drinks.js';
 import {dayLabel, dotsTxt, esc, fmtN, hm, tf} from '../util.js';
 import {S} from '../store.js';
 import {calc, grinderFor, line, makeCtx} from '../recipe.js';
@@ -35,10 +36,10 @@ export function vHome(){
   const seen=new Set(last?[last.recipeId]:[]),rec=[];
   for(const b of S.brews){if(b===last||!R[b.recipeId])continue;const k=b.recipeId;if(seen.has(k))continue;seen.add(k);rec.push(b);if(rec.length===3)break}
   const recent=rec.map(b=>{const r=R[b.recipeId];
-    return`<div class="row" data-a="brewSheet" data-id="${b.id}" role="button" tabindex="0">${ic(r.method,'mi')}
+    return`<div class="row" data-a="brewSheet" data-id="${b.id}" role="button" tabindex="0">${icFor(r,'mi')}
       <div class="row-m"><div class="row-t">${M[r.method].name} · ${esc(r.name)}</div><div class="row-s">${dayLabel(b.at)} · <span class="num">moedor ${b.grinder}</span></div></div>
       <button class="rbtn" data-a="repeat" data-id="${b.id}" aria-label="Repetir">${ui('rep')}Repetir</button></div>`}).join('');
-  const others=METHODS.filter(m=>!S.favs.includes(m.id)).map(m=>`<div class="row" data-a="method" data-m="${m.id}" data-lp="${m.id}" role="button" tabindex="0">${ic(m.id,'mi')}
+  const others=METHODS.filter(m=>m.id!=='drinks'&&!S.favs.includes(m.id)).map(m=>`<div class="row" data-a="method" data-m="${m.id}" data-lp="${m.id}" role="button" tabindex="0">${ic(m.id,'mi')}
       <div class="row-m"><div class="row-t">${m.name}</div><div class="row-s">${recipesOf(m.id).length} ${recipesOf(m.id).length>1?'receitas':'receita'} · ${m.sub}</div></div>${ui('chev','chev')}</div>`).join('');
   return`<div class="wrap">
     <div class="top"><div class="brand">café<span>커피</span></div><button class="ibtn edge-r" data-a="settings" aria-label="Ajustes">${ui('set')}</button></div>
@@ -47,5 +48,6 @@ export function vHome(){
     ${favs?`<section class="sec"><div class="sec-h"><span class="sec-t">seus métodos</span><button class="link" data-a="settings">editar</button></div><div class="grid2">${favs}</div></section>`:''}
     ${recent?`<section class="sec"><div class="sec-h"><span class="sec-t">recentes</span><button class="link" data-a="tab" data-t="history">histórico</button></div><div class="list">${recent}</div></section>`:''}
     ${others?`<section class="sec"><div class="sec-h"><span class="sec-t">explorar métodos</span></div><div class="list">${others}</div></section>`:''}
+    <section class="sec"><div class="sec-h"><span class="sec-t">bebidas</span><button class="link" data-a="method" data-m="drinks">leite e técnica</button></div><div class="list">${drinkRows()}</div></section>
   </div>`;
 }

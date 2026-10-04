@@ -11,7 +11,7 @@ export function sheetHtml(){
     const sw=(k,l,sub)=>`<div class="srow"><div class="row-m"><div class="row-t">${l}</div>${sub?`<div class="row-s">${sub}</div>`:''}</div><button class="sw" role="switch" aria-checked="${!!S.prefs[k]}" data-a="pref" data-k="${k}" aria-label="${l}"></button></div>`;
     body=`<div class="sh-h"><span class="sh-t">Ajustes</span><button class="ibtn edge-r" data-a="closeSheet" aria-label="Fechar">${ui('close')}</button></div>
       <div class="sec-t" style="margin:8px 2px 8px">métodos na tela inicial</div>
-      <div class="chips">${METHODS.map(m=>`<button class="chip ${S.favs.includes(m.id)?'on':''}" data-a="favSet" data-m="${m.id}" aria-pressed="${S.favs.includes(m.id)}">${m.name}</button>`).join('')}</div>
+      <div class="chips">${METHODS.filter(m=>m.id!=='drinks').map(m=>`<button class="chip ${S.favs.includes(m.id)?'on':''}" data-a="favSet" data-m="${m.id}" aria-pressed="${S.favs.includes(m.id)}">${m.name}</button>`).join('')}</div>
       <div class="sec-t" style="margin:26px 2px 4px">durante o preparo</div>
       ${sw('sound','Som','Aviso suave a cada nova etapa')}${sw('countdown','Contagem regressiva','Bipe curto nos 3 s antes da próxima etapa')}${sw('wake','Manter tela ligada','Durante o preparo')}${'vibrate'in navigator?sw('vibe','Vibração',''):''}
       <div class="sec-t" style="margin:22px 2px 0">aparência</div>
