@@ -21,6 +21,13 @@ export const MI={
  'dr-tonica':'<path d="M15 7h18l-2 32a2.5 2.5 0 0 1-2.5 2.3h-9A2.5 2.5 0 0 1 17 39z"/><rect x="18.5" y="13" width="6.5" height="6.5" rx="1.2" transform="rotate(-12 21.7 16.2)"/><rect x="23.5" y="21.5" width="6.5" height="6.5" rx="1.2" transform="rotate(10 26.7 24.7)"/><circle cx="20.5" cy="32.5" r="1.1"/><circle cx="26.5" cy="35.5" r="1.1"/>',
  'dr-latte-gelado':'<path d="M15 11h18l-2 28a2.5 2.5 0 0 1-2.5 2.3h-9A2.5 2.5 0 0 1 17 39z"/><path d="M26.5 30L32 4"/><rect x="18.5" y="15.5" width="6.5" height="6.5" rx="1.2" transform="rotate(-10 21.7 18.7)"/><path d="M16.2 28h15.6"/>',
  'dr-affogato':'<path d="M12 21h24a12 12 0 0 1-24 0z"/><path d="M24 33v7M18 41h12"/><path d="M17 21a7 7 0 0 1 14 0"/>',
+ /* bebidas doces */
+ 'dr-caramel-macchiato':'<path d="M15 9h18l-1.8 29.5a2.5 2.5 0 0 1-2.5 2.3h-9.4a2.5 2.5 0 0 1-2.5-2.3z"/><path d="M18.5 15.5l2.75-3 2.75 3 2.75-3 2.75 3"/><path d="M15.7 21h16.6"/><path d="M16.3 31h15.4"/>',
+ 'dr-caramel-gelado':'<path d="M15 11h18l-2 28a2.5 2.5 0 0 1-2.5 2.3h-9A2.5 2.5 0 0 1 17 39z"/><path d="M27 30L32.5 4"/><rect x="18.5" y="21" width="6.5" height="6.5" rx="1.2" transform="rotate(-10 21.7 24.2)"/><path d="M17.5 17l2.3-2.5 2.3 2.5 2.3-2.5"/>',
+ 'dr-vanilla-latte':'<path d="M12 17h22v14a8 8 0 0 1-8 8h-6a8 8 0 0 1-8-8z"/><path d="M34 21h2.5a3.5 3.5 0 0 1 0 7H34"/><path d="M23 4.5v7M19.5 8h7M20.6 5.6l4.8 4.8M25.4 5.6l-4.8 4.8"/>',
+ 'dr-white-mocha':'<path d="M13 12h20v24a4 4 0 0 1-4 4H17a4 4 0 0 1-4-4z"/><path d="M33 18h2.5a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H33"/><path d="M13 32h20"/><rect x="18.5" y="17" width="9" height="9" rx="1.3"/><path d="M23 17v9M18.5 21.5h9"/>',
+ 'dr-doce-de-leite':'<path d="M11 22h24v3a11 11 0 0 1-11 11h-2a11 11 0 0 1-11-11z"/><path d="M35 24h1.8a3.4 3.4 0 0 1 0 6.8h-2"/><path d="M9 41h30"/><path d="M23 6c2.6 3.3 4 5.2 4 7.2a4 4 0 0 1-8 0c0-2 1.4-3.9 4-7.2z"/>',
+ 'dr-bombon':'<path d="M16 13h16l-1.6 26.5H17.6z"/><path d="M17 29h14"/><path d="M20.5 37l3.2-4.5M25 37l3.2-4.5"/>',
  drinks:'<path d="M14 9h20l-2.4 29.3a3 3 0 0 1-3 2.7h-9.2a3 3 0 0 1-3-2.7z"/><path d="M15 21h18"/><path d="M19 15.5c1.7-1.6 3.3-1.6 5 0s3.3 1.6 5 0"/>',
  espresso:'<path d="M12 21h22v7a8 8 0 0 1-8 8h-6a8 8 0 0 1-8-8z"/><path d="M34 23h2.5a3.5 3.5 0 0 1 0 7H33"/><path d="M8 41h30"/><path d="M19 8c-2 3 2 5 0 8M26 8c-2 3 2 5 0 8"/>'
 };

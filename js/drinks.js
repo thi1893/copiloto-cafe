@@ -9,6 +9,8 @@ const STEAM={
   longa:'Aeração longa: +40–50% de volume. Texturize até 55–65 °C'
 };
 const SHINE='Antes, bata a jarra na bancada e gire até o leite brilhar';
+/* As bebidas doces não estão no guia: xarope e calda seguem medidas usuais de cafeteria. */
+const SWEET='Xarope e calda são medidas usuais de cafeteria; ajuste o doce ao seu gosto.';
 
 export function drinks(PREP_ESP){
   const shot=(a='Extraia',n='Primeiras gotas em 8–10 s')=>({t:0,shot:1,a,n});
@@ -56,7 +58,32 @@ export function drinks(PREP_ESP){
       steps:[shot(),{manual:1,a:'Despeje o espresso sobre o leite'}]}),
     d('affogato','Affogato',{desc:'Espresso sobre uma bola de sorvete de creme.',profile:'Sobremesa',level:'Fácil',
       cup:'taça',extra:'uma bola de sorvete',foam:'nenhuma',prep:['Uma bola de sorvete de creme na taça','Extraia numa xícara à parte'],
-      steps:[shot(),{manual:1,a:'Despeje sobre o sorvete',n:'Sirva na hora'}]})
+      steps:[shot(),{manual:1,a:'Despeje sobre o sorvete',n:'Sirva na hora'}]}),
+
+    /* ---- bebidas doces ---- */
+    d('caramel-macchiato','Caramel macchiato',{sweet:1,desc:'Leite com baunilha, espresso por cima e fio de caramelo.',profile:'Doce, baunilha e caramelo',
+      cup:'300 ml',extra:'200 g de leite, baunilha e caramelo',foam:'~1 cm',
+      prep:['15 g de xarope de baunilha no copo','200 g de leite gelado na jarra (faixa 180–220 g)','Calda de caramelo à mão','Extraia numa xícara à parte'],
+      steps:[shot(),steam(200,'media'),{manual:1,a:'Despeje o leite no copo',n:'Sobre o xarope de baunilha'},{manual:1,a:'Despeje o espresso por cima',n:'No centro, para marcar a espuma'},{manual:1,q:10,unit:'g',a:'Finalize com caramelo',n:'Em fio, sobre a espuma'}],tips:[SWEET]}),
+    d('caramel-gelado','Caramel macchiato gelado',{sweet:1,desc:'Leite frio com baunilha e gelo, espresso por cima e caramelo.',profile:'Doce e refrescante',level:'Fácil',
+      cup:'350 ml',extra:'170 g de leite frio, baunilha e caramelo',foam:'nenhuma',
+      prep:['Copo com gelo, 15 g de xarope de baunilha e 170 g de leite frio','Calda de caramelo à mão','Extraia numa xícara à parte'],
+      steps:[shot(),{manual:1,a:'Despeje o espresso sobre o leite',n:'Devagar, para formar camadas'},{manual:1,q:10,unit:'g',a:'Finalize com caramelo',n:'Em fio, por cima'}],tips:[SWEET]}),
+    d('vanilla-latte','Latte de baunilha',{sweet:1,desc:'Latte adoçado com xarope de baunilha.',profile:'Suave e doce',
+      cup:'240–300 ml',extra:'220 g de leite + baunilha',foam:'~1 cm',
+      prep:['15 g de xarope de baunilha na xícara','220 g de leite gelado na jarra (faixa 200–240 g)'],
+      steps:[shot('Extraia sobre o xarope'),{manual:1,a:'Misture o xarope ao espresso'},steam(220,'media'),pour(SHINE)],tips:[SWEET]}),
+    d('white-mocha','Mocha branco',{sweet:1,desc:'Latte com chocolate branco derretido.',profile:'Cremoso, bem doce',
+      cup:'240–300 ml',extra:'200 g de leite + chocolate branco',foam:'~1 cm',
+      prep:['25 g de chocolate branco derretido na xícara','200 g de leite gelado na jarra (faixa 180–220 g)'],
+      steps:[shot('Extraia sobre o chocolate'),{manual:1,a:'Misture o chocolate ao espresso'},steam(200,'media'),pour(SHINE)],tips:[SWEET]}),
+    d('doce-de-leite','Latte de doce de leite',{sweet:1,desc:'Doce de leite dissolvido no espresso, com leite vaporizado.',profile:'Caramelado',
+      cup:'240–300 ml',extra:'200 g de leite + doce de leite',foam:'~1 cm',
+      prep:['25 g de doce de leite na xícara','200 g de leite gelado na jarra (faixa 180–220 g)'],
+      steps:[shot('Extraia sobre o doce de leite'),{manual:1,a:'Misture até dissolver'},steam(200,'media'),pour(SHINE)],tips:[SWEET]}),
+    d('bombon','Café bombón',{sweet:1,desc:'Espresso sobre leite condensado, em duas camadas.',profile:'Muito doce, curto',level:'Fácil',
+      cup:'90–120 ml',extra:'30 g de leite condensado',foam:'nenhuma',prep:['30 g de leite condensado no copo pequeno'],
+      steps:[shot('Extraia sobre o leite condensado','O café fica por cima, em duas camadas')],tips:['Misture antes de beber.',SWEET]})
   ];
 }
 

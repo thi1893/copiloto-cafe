@@ -35,6 +35,7 @@ export function vMethod(mid){
     <div class="m-hero">${ic(mid)}<h1 class="h1">${m.name}</h1><p class="desc">${m.sub}</p></div>
     ${lastCard}
     <section class="sec"><div class="sec-h"><span class="sec-t">${mid==='drinks'?'bebidas':'receitas'}</span></div>${mid==='drinks'?`<div class="list">${drinkRows()}</div>`:cards}</section>
+    ${mid==='drinks'?`<section class="sec"><div class="sec-h"><span class="sec-t">bebidas doces</span></div><div class="list">${drinkRows(true)}</div></section>`:''}
     ${machine}${milk}
   </div>`;
 }

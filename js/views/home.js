@@ -49,5 +49,6 @@ export function vHome(){
     ${recent?`<section class="sec"><div class="sec-h"><span class="sec-t">recentes</span><button class="link" data-a="tab" data-t="history">histórico</button></div><div class="list">${recent}</div></section>`:''}
     ${others?`<section class="sec"><div class="sec-h"><span class="sec-t">explorar métodos</span></div><div class="list">${others}</div></section>`:''}
     <section class="sec"><div class="sec-h"><span class="sec-t">bebidas</span><button class="link" data-a="method" data-m="drinks">leite e técnica</button></div><div class="list">${drinkRows()}</div></section>
+    <section class="sec"><div class="sec-h"><span class="sec-t">bebidas doces</span></div><div class="list">${drinkRows(true)}</div></section>
   </div>`;
 }
