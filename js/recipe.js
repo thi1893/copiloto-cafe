@@ -1,4 +1,4 @@
-import {R} from './data.js';
+import {INNER_BURR, R} from './data.js';
 import {fmtN} from './util.js';
 import {S} from './store.js';
 
@@ -36,7 +36,7 @@ export function line(r,dose,water,ice){
 export const memKey=rid=>R[rid].base||rid;
 export function grinderFor(rid){
   const r=R[rid],m=S.mem[memKey(rid)]||{},g=m.g??(m.grind&&m.grind._);
-  return g??r.gStart??Math.round((r.grinder[0]+r.grinder[1])/2);
+  return gc((g??r.gStart??Math.round((r.grinder[0]+r.grinder[1])/2))+burrShift());
 }
 export function makeCtx(rid,o={}){
   const r=R[rid],m=S.mem[memKey(rid)]||{};
@@ -47,6 +47,29 @@ export function makeCtx(rid,o={}){
 export function ctxFromBrew(b){
   if(!R[b.recipeId])return null;
   const latest=S.brews.find(x=>x.recipeId===b.recipeId);
-  return latest&&latest.id===b.id?makeCtx(b.recipeId):makeCtx(b.recipeId,{dose:b.dose,ratio:b.ratio,grinder:b.grinder});
+  return latest&&latest.id===b.id?makeCtx(b.recipeId):makeCtx(b.recipeId,{dose:b.dose,ratio:b.ratio,grinder:gNow(b)});
 }
-export const gRange=r=>r.grinder[0]===r.grinder[1]?String(r.grinder[0]):r.grinder[0]+'–'+r.grinder[1];
+
+/* Mó interna. As receitas estão calibradas com ela no INNER_BURR. Um número maior afasta as
+   mós (mais grosso), então a mesma moagem pede posições externas menores, e vice-versa.
+   burrK = quantas posições externas equivalem a um passo interno (estimativa, ajustável). */
+export const burrNow=()=>S.burr??INNER_BURR;
+export const burrK=()=>S.burrK??6;
+export const burrShift=()=>-(burrNow()-INNER_BURR)*burrK();
+const gc=v=>Math.min(60,Math.max(1,Math.round(v)));
+const gNeed=r=>[r.grinder[0]+burrShift(),r.grinder[1]+burrShift()]; // o que a receita pede, sem limitar
+export const gSpan=r=>gNeed(r).map(gc);
+export const gRange=r=>{const[a,b]=gSpan(r);return a===b?String(a):a+'–'+b};
+/* 'max' = pede mais grosso que 60; 'min' = pede mais fino que 1; '' = dentro do alcance. */
+export const gLimit=r=>{const[a,b]=gNeed(r);return a>60?'max':b<1?'min':''};
+/* Posição da mó interna que traria a receita para dentro do alcance. */
+export function burrFix(r){
+  const[a,b]=gNeed(r),k=burrK();
+  const n=a>60?burrNow()+Math.ceil((a-60)/k):b<1?burrNow()-Math.ceil((1-b)/k):burrNow();
+  return Math.min(10,Math.max(1,n));
+}
+/* Posição real do moedor → valor guardado na escala de referência. Parado no limite numa receita
+   fora do alcance não é preferência: fica sem valor, para a posição voltar a seguir a receita. */
+export const gStore=(g,r)=>{const l=r?gLimit(r):'';return(l==='max'&&g>=60)||(l==='min'&&g<=1)?undefined:g-burrShift()};
+/* Um preparo antigo pode ter sido feito com a mó interna em outra posição: equivalente de hoje. */
+export const gNow=b=>gc(b.grinder-(burrNow()-(b.burr??INNER_BURR))*burrK());

@@ -44,7 +44,7 @@ no armazenamento do app instalado (separado do Safari).
 ## Como mudar
 
 - Nova receita: adicione um item em RECIPES (js/data.js). Cada etapa tem `t` (segundos),
-  `to` (peso acumulado em g) e `a` (ação). `grinder` é a faixa de posições do moedor.
+  `to` (peso acumulado em g) e `a` (ação). `grinder` é a faixa de posições do moedor com a mó interna no 3 (`INNER_BURR`) e pode passar de 60; o app desloca tudo conforme a mó interna escolhida em Ajustes (`S.burr`, `S.burrK` posições por passo) e limita a 1–60.
 - Novo método: adicione em METHODS (js/data.js) e um ícone em MI (js/icons.js).
 - Nova tela: crie um arquivo em js/views/ e chame-o em render() (js/app.js).
 - Nova bebida: adicione um item em drinks() (js/drinks.js) e um ícone com o mesmo id em MI (js/icons.js).

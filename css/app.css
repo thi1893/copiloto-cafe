@@ -418,6 +418,12 @@ textarea.note{width:100%;min-height:88px;border-radius:16px;border:0;background:
 .srow{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;width:100%}
 .srow+.srow{border-top:1px solid var(--line)}
 .srow .row-s{white-space:normal}
+.srow .stp{flex:none}
+.burr-p{font-size:13px;line-height:1.7;color:var(--ink-2);margin:2px 2px 0;padding:10px 14px;border-radius:14px;background:var(--surface-2)}
+.burr-p b{color:var(--accent-ink);font-weight:600}
+.burr-p span:not(.faint){white-space:nowrap}
+.sheet .disc .stp button{background:var(--surface)}
+.sheet .disc .stp .fixed{color:var(--ink)}
 .sw{width:52px;height:32px;border-radius:16px;background:var(--line-2);position:relative;flex:none;transition:background .15s}
 .sw::after{content:'';position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.18)}
 .sw[aria-checked="true"]{background:var(--accent)}
@@ -451,6 +457,8 @@ textarea.note{width:100%;min-height:88px;border-radius:16px;border:0;background:
 .step-ind{display:flex;gap:6px}
 .step-ind i{width:18px;height:3px;border-radius:2px;background:var(--line-2)}
 .step-ind i.on{background:var(--ink)}
+
+.sheet.still,.scrim.still{animation:none}
 @keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
 .toast{animation:none}
 @keyframes fade{from{opacity:0}to{opacity:1}}

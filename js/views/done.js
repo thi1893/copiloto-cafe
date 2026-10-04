@@ -1,9 +1,12 @@
 import {M, R, RATE_L, TASTE} from '../data.js';
 
-const atLimit=g=>g<=1?' Você já está na posição 1: aumente a dose em 0,5 g ou desça a mó interna um passo.':' Você já está na posição 60: para moer mais grosso, suba a mó interna.';
 import {cap, clamp, esc, fmtR, fmtT, r1, tf} from '../util.js';
 import {S} from '../store.js';
-import {line} from '../recipe.js';
+import {burrNow, line} from '../recipe.js';
+
+const atLimit=g=>{const n=burrNow();
+  return g<=1?` Você já está na posição 1: aumente a dose em 0,5 g${n>1?` ou desça a mó interna para ${n-1} e atualize o número em Ajustes`:''}.`
+    :` Você já está na posição 60${n<10?`: para moer mais grosso, suba a mó interna para ${n+1} e atualize o número em Ajustes`:', o mais grosso que o moedor entrega'}.`};
 import {UI} from '../ui.js';
 import {vHome} from './home.js';
 

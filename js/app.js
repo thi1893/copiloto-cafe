@@ -1,7 +1,7 @@
 import {M, METHODS, PALETTES, R} from './data.js';
 import {$, clamp, fmtT, parseNum, r1, tf, uid} from './util.js';
 import {S, save} from './store.js';
-import {baseRatio, calc, ctxFromBrew, doseStep, makeCtx, memKey, ratioStep} from './recipe.js';
+import {baseRatio, burrK, burrNow, calc, ctxFromBrew, doseStep, gStore, makeCtx, memKey, ratioStep} from './recipe.js';
 import {audio, audioSession, audioStarted, buzz, chime, keepAwake, quiet, snd} from './feedback.js';
 import {UI, nav} from './ui.js';
 import {elapsedMs, pourState, stepIdx} from './engine.js';
@@ -30,10 +30,10 @@ function finishBrew(sec){
   const a=S.active;if(!a)return;
   const ctx=a.ctx,r=R[ctx.recipeId],c=a.calc,last=c.steps[stepIdx(a,elapsedMs(a))];
   const b={id:uid(),at:Date.now(),recipeId:r.id,method:r.method,
-    dose:ctx.dose,ratio:ctx.ratio,water:c.water,ice:c.ice,grinder:ctx.grinder,time:r.untimed?null:(a.shotSec??Math.round(sec)),
+    dose:ctx.dose,ratio:ctx.ratio,water:c.water,ice:c.ice,grinder:ctx.grinder,burr:burrNow(),time:r.untimed?null:(a.shotSec??Math.round(sec)),
     judge:a.shotSec!=null||!!(last&&(last.drain||last.shot)),rating:0,taste:null,note:''};
   S.brews.unshift(b);if(S.brews.length>400)S.brews.length=400;
-  const k=memKey(r.id),m=S.mem[k]||(S.mem[k]={});m.dose=ctx.dose;m.ratio=ctx.ratio;m.g=ctx.grinder;
+  const k=memKey(r.id),m=S.mem[k]||(S.mem[k]={});m.dose=ctx.dose;m.ratio=ctx.ratio;m.g=gStore(ctx.grinder,r);
   S.methodLast[r.method]=r.id;S.active=null;save();keepAwake(false);snd.done();quiet();
   UI.done=b.id;UI.applied={};UI.noteOpen=false;nav.stack=[{v:'home'}];render();window.scrollTo(0,0);
 }
@@ -98,7 +98,14 @@ function render(){
     tabs=['home','history'].includes(t.v);
   }
   const ae=document.activeElement,keep=ae&&ae.id&&ae.tagName==='INPUT'?{id:ae.id,s:ae.selectionStart}:null;
+  // folha já aberta: mantém a rolagem e as seções abertas, sem repetir a animação de entrada
+  const sh=document.querySelector('.sheet'),was=sh?{k:sh.dataset.k,top:sh.scrollTop,open:[...sh.querySelectorAll('details')].map(d=>d.open)}:null;
   app.innerHTML=html+(tabs?tabbar(nav.stack[nav.stack.length-1].v):'')+sheetHtml()+confirmHtml()+toastHtml();
+  const now=document.querySelector('.sheet');
+  if(was&&now&&now.dataset.k===was.k){
+    now.classList.add('still');const sc=document.querySelector('.scrim');if(sc)sc.classList.add('still');
+    now.querySelectorAll('details').forEach((d,i)=>{if(was.open[i])d.open=true});now.scrollTop=was.top;
+  }
   if(keep){const el=document.getElementById(keep.id);if(el){el.focus();try{el.setSelectionRange(keep.s,keep.s)}catch(e){}}}
   document.body.style.overflow=UI.sheet||UI.confirm?'hidden':'';
 }
@@ -108,7 +115,7 @@ function ask(o){UI.confirm=o;render()}
 function reapply(b){
   const k=memKey(b.recipeId),m=S.mem[k]||(S.mem[k]={}),ap=UI.applied;let g=b.grinder,rt=b.ratio;
   for(const k in ap){if(ap[k].g!=null)g=ap[k].g;if(ap[k].ratio!=null)rt=ap[k].ratio}
-  m.g=g;m.ratio=rt;save();
+  m.g=gStore(g,R[b.recipeId]);m.ratio=rt;save();
 }
 const A={
   tab:d=>tab(d.t),back:()=>back(),
@@ -153,6 +160,8 @@ const A={
   undo:()=>{const t=UI.toast;UI.toast=null;if(t&&t.undo)t.undo();render()},
   pref:d=>{S.prefs[d.k]=!S.prefs[d.k];if(d.k==='silent')audioSession();if(d.k==='sound'&&S.prefs.sound)chime();save();render()},
   testSound:()=>{audioSession();chime();if(!S.active)quiet()},
+  burr:d=>{S.burr=clamp(burrNow()+(+d.d),1,10);save();render()},
+  burrK:d=>{S.burrK=clamp(burrK()+(+d.d),1,12);save();render()},
   theme:d=>{S.prefs.theme=d.v;save();render()},
   palette:d=>{S.prefs.palette=d.v;save();render()},
   clearHist:()=>ask({title:'Apagar todo o histórico?',body:'Seus ajustes de moedor continuam salvos.',ok:'Apagar histórico',no:'Cancelar',danger:1,onOk:()=>{S.brews=[];UI.sheet=null;save()}}),

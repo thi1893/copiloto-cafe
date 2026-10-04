@@ -5,7 +5,7 @@ import {guideRows} from './guide.js';
 import {ic, ui} from '../icons.js';
 import {dayLabel, esc, tf} from '../util.js';
 import {S} from '../store.js';
-import {gRange, line} from '../recipe.js';
+import {burrNow, gNow, gRange, grinderFor, line} from '../recipe.js';
 
 export function vMethod(mid){
   const m=M[mid],rs=recipesOf(mid),fav=S.favs.includes(mid),lastB=S.brews.find(b=>b.method===mid&&R[b.recipeId]);
@@ -17,13 +17,14 @@ export function vMethod(mid){
   if(lastB){const r=R[lastB.recipeId];
     lastCard=`<section class="card mt"><div class="eyebrow">último · ${dayLabel(lastB.at).toLowerCase()}</div>
       <div class="hero-t" style="font-size:20px">${esc(r.name)}</div>
-      <div class="meta num"><b>${line(r,lastB.dose,lastB.water,lastB.ice)}</b>${lastB.grinder?` · moedor ${lastB.grinder}`:''}${lastB.time!=null?` · ${tf(r,lastB.time)}`:''}</div>
+      <div class="meta num"><b>${line(r,lastB.dose,lastB.water,lastB.ice)}</b>${lastB.grinder?` · moedor ${gNow(lastB)}`:''}${lastB.time!=null?` · ${tf(r,lastB.time)}`:''}</div>
       <button class="btn mt" data-a="repeat" data-id="${lastB.id}">Preparar novamente</button></section>`}
+  const fx=x=>String(x).replace('{esp}',grinderFor('esp-n')).replace('{burr}',burrNow());
   const machine=mid==='espresso'?`<section class="sec"><div class="sec-h"><span class="sec-t">sua máquina</span></div>
-    <details class="disc"><summary>Calibrar um café novo</summary><div class="disc-b"><ol>${MACHINE.calib.map(x=>`<li>${x}</li>`).join('')}</ol></div></details>
-    <details class="disc"><summary>Ajuste por torra</summary><div class="disc-b"><table class="tbl"><tr><th>Torra</th><th>Temp.</th><th>Pré-inf.</th><th>Moedor</th></tr>${MACHINE.roast.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td><td>${x[4]}</td></tr>`).join('')}</table><p style="margin-top:10px">Ácido pede +1 °C; gosto de cinza pede −1 °C.</p></div></details>
+    <details class="disc"><summary>Calibrar um café novo</summary><div class="disc-b"><ol>${MACHINE.calib.map(x=>`<li>${fx(x)}</li>`).join('')}</ol></div></details>
+    <details class="disc"><summary>Ajuste por torra</summary><div class="disc-b"><table class="tbl"><tr><th>Torra</th><th>Temp.</th><th>Pré-inf.</th><th>Moedor</th></tr>${MACHINE.roast.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td><td>${fx(x[4])}</td></tr>`).join('')}</table><p style="margin-top:10px">Ácido pede +1 °C; gosto de cinza pede −1 °C.</p></div></details>
     <details class="disc"><summary>Comandos</summary><div class="disc-b">${MACHINE.cmds.map(x=>`<h4>${x[0]}</h4><p>${x[1]}</p>`).join('')}</div></details>
-    <details class="disc"><summary>Cuidados</summary><div class="disc-b"><ul>${MACHINE.care.map(x=>`<li>${x}</li>`).join('')}</ul></div></details></section>`:'';
+    <details class="disc"><summary>Cuidados</summary><div class="disc-b"><ul>${MACHINE.care.map(x=>`<li>${fx(x)}</li>`).join('')}</ul></div></details></section>`:'';
   const milk=mid==='drinks'?`<section class="sec"><div class="sec-h"><span class="sec-t">leite e técnica</span></div>
     <div class="list" style="margin-bottom:10px">${guideRows()}</div>
     <details class="disc"><summary>Textura por bebida</summary><div class="disc-b"><table class="tbl"><tr><th>Bebida</th><th>Aeração</th><th>Textura</th></tr>${MILK.texture.map(x=>`<tr><td>${x[0]}</td><td>+${x[1]}</td><td>${x[2]}</td></tr>`).join('')}</table></div></details>

@@ -4,7 +4,7 @@ import {drinkRows} from './drinks.js';
 import {guideRows} from './guide.js';
 import {dayLabel, dotsTxt, esc, fmtN, hm, tf} from '../util.js';
 import {S} from '../store.js';
-import {calc, grinderFor, line, makeCtx} from '../recipe.js';
+import {calc, gNow, grinderFor, line, makeCtx} from '../recipe.js';
 
 export function greeting(){const h=new Date().getHours();return h<5?'Boa noite':h<12?'Bom dia':h<18?'Boa tarde':'Boa noite'}
 export function vHome(){
@@ -15,7 +15,7 @@ export function vHome(){
     hero=`<section class="card" aria-label="Último preparo">
       <div class="eyebrow">último preparo · ${dayLabel(last.at).toLowerCase()} ${hm(last.at)}</div>
       <div class="hero-t">${m.name} <span>— ${esc(r.name)}</span></div>
-      <div class="meta num"><b>${line(r,last.dose,last.water,last.ice)}</b>${last.grinder?` · moedor ${last.grinder}`:''}${last.time!=null?` · ${tf(r,last.time)}`:''}${last.rating?` · <span class="dots-s">${dotsTxt(last.rating)}</span>`:''}</div>
+      <div class="meta num"><b>${line(r,last.dose,last.water,last.ice)}</b>${last.grinder?` · moedor ${gNow(last)}`:''}${last.time!=null?` · ${tf(r,last.time)}`:''}${last.rating?` · <span class="dots-s">${dotsTxt(last.rating)}</span>`:''}</div>
       <button class="btn mt" data-a="repeat" data-id="${last.id}">Preparar novamente</button>
     </section>`;
   }else{
