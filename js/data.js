@@ -120,3 +120,6 @@ export const recipesOf=mid=>RECIPES.filter(r=>r.method===mid);
    espresso em 1–3 e V60 a partir de 54 são as referências do dono; o resto é estimado
    entre esses dois pontos. gMax marca receitas que pedem moagem mais grossa que a posição 60. */
 export const INNER_BURR=3;
+
+/* Paletas de cor: fundo claro e escuro (barra de status) e amostra para o seletor. */
+export const PALETTES={cinza:{name:'Cinza',light:'#ECECE9',dark:'#131312',dot:'#9C9C96'},cobalto:{name:'Cobalto',light:'#DDE8F0',dark:'#0B2253',dot:'#1F4BA5'}};

@@ -1,4 +1,4 @@
-import {INNER_BURR, M, METHODS, R, RATE_L, RECIPES, TASTE} from '../data.js';
+import {INNER_BURR, M, PALETTES, METHODS, R, RATE_L, RECIPES, TASTE} from '../data.js';
 import {ui} from '../icons.js';
 import {dayLabel, dotsTxt, esc, fmtR, hm, tf} from '../util.js';
 import {S} from '../store.js';
@@ -16,6 +16,8 @@ export function sheetHtml(){
       ${sw('sound','Som','Aviso suave a cada nova etapa')}${sw('countdown','Contagem regressiva','Bipe curto nos 3 s antes da próxima etapa')}${sw('wake','Manter tela ligada','Durante o preparo')}${'vibrate'in navigator?sw('vibe','Vibração',''):''}
       <div class="sec-t" style="margin:22px 2px 0">aparência</div>
       <div class="seg">${[['auto','Automático'],['light','Claro'],['dark','Escuro']].map(x=>`<button class="${S.prefs.theme===x[0]?'on':''}" data-a="theme" data-v="${x[0]}">${x[1]}</button>`).join('')}</div>
+      <div class="sec-t" style="margin:18px 2px 0">cores</div>
+      <div class="seg">${Object.entries(PALETTES).map(([k,p])=>`<button class="${(S.prefs.palette||'cinza')===k?'on':''}" data-a="palette" data-v="${k}" aria-pressed="${(S.prefs.palette||'cinza')===k}"><i class="pal" style="background:${p.dot}"></i>${p.name}</button>`).join('')}</div>
       <details class="disc" style="margin-top:22px"><summary>Moedor: posição por receita</summary><div class="disc-b"><table class="tbl"><tr><th>Receita</th><th>Faixa</th><th>Sua</th></tr>${RECIPES.map(r=>`<tr><td>${M[r.method].name} · ${esc(r.name)}</td><td class="num">${gRange(r)}${r.gMax?' · limite':''}</td><td class="num acc">${grinderFor(r.id)}</td></tr>`).join('')}</table>
         <p style="margin-top:12px">Calibrado para a mó interna (triângulo vermelho) no ${INNER_BURR}: espresso em 1–3 e V60 a partir de 54. As outras posições são estimativas entre essas duas referências; ajuste pelo tempo e pelo gosto. “Limite” indica receita que pede moagem mais grossa que a posição 60.</p></div></details>
       ${S.brews.length?`<button class="btn txt mt" style="color:var(--danger)" data-a="clearHist">Apagar histórico</button>`:''}`;

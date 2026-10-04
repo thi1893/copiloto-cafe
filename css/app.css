@@ -23,6 +23,30 @@
   --pri:#EDEDEA; --pri-fg:#131312; --danger:#E0786B;
   --scrim:rgba(0,0,0,.5); --bar:rgba(19,19,18,.84); color-scheme:dark;
 }
+/* Paleta Cobalto: tinta azul cobalto sobre azul-claro e papel creme, destaque em laranja. */
+:root[data-palette="cobalto"]{
+  --bg:#DDE8F0; --surface:#FBFAF5; --surface-2:#C8D8E5; --ink:#143A94; --ink-2:#4A66A0; --ink-3:#6C84B0;
+  --line:rgba(20,58,148,.10); --line-2:rgba(20,58,148,.22);
+  --accent:#D9773C; --accent-ink:#B4501A; --accent-soft:rgba(217,119,60,.16);
+  --pri:#143A94; --pri-fg:#FBFAF5; --danger:#B4483C;
+  --scrim:rgba(8,26,66,.35); --bar:rgba(221,232,240,.86);
+}
+@media (prefers-color-scheme:dark){
+  :root[data-palette="cobalto"]:not([data-theme="light"]){
+    --bg:#0B2253; --surface:#122E6E; --surface-2:#1C3F8C; --ink:#F3F5F0; --ink-2:#AFC0E2; --ink-3:#7A90C2;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.2);
+    --accent:#E88A4E; --accent-ink:#F2A06A; --accent-soft:rgba(232,138,78,.2);
+    --pri:#F3F5F0; --pri-fg:#0B2253; --danger:#F08A7C;
+    --scrim:rgba(2,10,30,.55); --bar:rgba(11,34,83,.86); color-scheme:dark;
+  }
+}
+:root[data-palette="cobalto"][data-theme="dark"]{
+  --bg:#0B2253; --surface:#122E6E; --surface-2:#1C3F8C; --ink:#F3F5F0; --ink-2:#AFC0E2; --ink-3:#7A90C2;
+  --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.2);
+  --accent:#E88A4E; --accent-ink:#F2A06A; --accent-soft:rgba(232,138,78,.2);
+  --pri:#F3F5F0; --pri-fg:#0B2253; --danger:#F08A7C;
+  --scrim:rgba(2,10,30,.55); --bar:rgba(11,34,83,.86); color-scheme:dark;
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{background:var(--bg);-webkit-text-size-adjust:100%;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.5;letter-spacing:-.011em;-webkit-font-smoothing:antialiased;min-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overscroll-behavior-y:none}
@@ -278,6 +302,8 @@ textarea.note{width:100%;min-height:88px;border-radius:16px;border:0;background:
 .seg{display:flex;background:var(--surface-2);border-radius:13px;padding:3px;margin-top:8px}
 .seg button{flex:1;height:38px;border-radius:10px;font-size:14px;text-align:center}
 .seg button.on{background:var(--surface);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.seg button{display:flex;align-items:center;justify-content:center;gap:8px}
+.pal{width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 1px var(--line-2);flex:none}
 .sel{color:var(--accent-ink)}
 .check{width:22px;height:22px;color:var(--accent-ink);flex:none}
 /* modal + toast */

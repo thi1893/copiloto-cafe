@@ -1,4 +1,4 @@
-import {M, METHODS, R} from './data.js';
+import {M, METHODS, PALETTES, R} from './data.js';
 import {$, clamp, fmtT, parseNum, r1, tf, uid} from './util.js';
 import {S, save} from './store.js';
 import {baseRatio, calc, ctxFromBrew, doseStep, makeCtx, ratioStep} from './recipe.js';
@@ -67,8 +67,9 @@ function toast(msg,undo){UI.toast={msg,undo,id:uid()};const id=UI.toast.id;rende
 
 /* ---------- render ---------- */
 function applyTheme(){
-  const t=S.prefs.theme,light='#ECECE9',dark='#131312';
-  if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=t;
+  const t=S.prefs.theme,pal=PALETTES[S.prefs.palette]?S.prefs.palette:'cinza',{light,dark}=PALETTES[pal],root=document.documentElement;
+  if(t==='auto')root.removeAttribute('data-theme');else root.dataset.theme=t;
+  if(pal==='cinza')root.removeAttribute('data-palette');else root.dataset.palette=pal;
   const a=document.getElementById('tcLight'),b=document.getElementById('tcDark');
   if(a)a.content=t==='dark'?dark:light;if(b)b.content=t==='light'?light:dark;
 }
@@ -137,6 +138,7 @@ const A={
   undo:()=>{const t=UI.toast;UI.toast=null;if(t&&t.undo)t.undo();render()},
   pref:d=>{S.prefs[d.k]=!S.prefs[d.k];if(d.k==='sound'&&S.prefs.sound){audio();tone(880,.4,.1)}save();render()},
   theme:d=>{S.prefs.theme=d.v;save();render()},
+  palette:d=>{S.prefs.palette=d.v;save();render()},
   clearHist:()=>ask({title:'Apagar todo o histórico?',body:'Seus ajustes de moedor continuam salvos.',ok:'Apagar histórico',no:'Cancelar',danger:1,onOk:()=>{S.brews=[];UI.sheet=null;save()}}),
   obToggle:d=>{UI.obFavs.has(d.m)?UI.obFavs.delete(d.m):UI.obFavs.add(d.m);render()},
   obNext:()=>{S.favs=METHODS.map(m=>m.id).filter(id=>UI.obFavs.has(id));S.onboarded=true;save();render()}
