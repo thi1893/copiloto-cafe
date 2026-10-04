@@ -1,8 +1,8 @@
-import {GBANDS, M, METHODS, R, RATE_L, RECIPES, TASTE} from '../data.js';
+import {INNER_BURR, M, METHODS, R, RATE_L, RECIPES, TASTE} from '../data.js';
 import {ui} from '../icons.js';
 import {dayLabel, dotsTxt, esc, fmtR, hm, tf} from '../util.js';
 import {S} from '../store.js';
-import {grinderFor, line} from '../recipe.js';
+import {gRange, grinderFor, line} from '../recipe.js';
 import {UI} from '../ui.js';
 
 export function sheetHtml(){
@@ -16,8 +16,8 @@ export function sheetHtml(){
       ${sw('sound','Som','Aviso suave a cada nova etapa')}${sw('countdown','Contagem regressiva','Bipe curto nos 3 s antes da próxima etapa')}${sw('wake','Manter tela ligada','Durante o preparo')}${'vibrate'in navigator?sw('vibe','Vibração',''):''}
       <div class="sec-t" style="margin:22px 2px 0">aparência</div>
       <div class="seg">${[['auto','Automático'],['light','Claro'],['dark','Escuro']].map(x=>`<button class="${S.prefs.theme===x[0]?'on':''}" data-a="theme" data-v="${x[0]}">${x[1]}</button>`).join('')}</div>
-      <details class="disc" style="margin-top:22px"><summary>Moedor: posição por receita</summary><div class="disc-b"><table class="tbl"><tr><th>Receita</th><th>Faixa</th><th>Sua</th></tr>${RECIPES.map(r=>`<tr><td>${M[r.method].name} · ${esc(r.name)}</td><td class="num">${r.grinder[0]}–${r.grinder[1]}</td><td class="num acc">${grinderFor(r.id)}</td></tr>`).join('')}</table>
-        <p style="margin-top:12px">Moedor Tramontina by Breville: 60 posições, 1 é a mais fina. Faixas do fabricante: ${GBANDS.map(b=>`${b[2]} ${b[0]}–${b[1]}`).join(', ')}. São pontos de partida; cada café varia de 2 a 4 posições.</p></div></details>
+      <details class="disc" style="margin-top:22px"><summary>Moedor: posição por receita</summary><div class="disc-b"><table class="tbl"><tr><th>Receita</th><th>Faixa</th><th>Sua</th></tr>${RECIPES.map(r=>`<tr><td>${M[r.method].name} · ${esc(r.name)}</td><td class="num">${gRange(r)}${r.gMax?' · limite':''}</td><td class="num acc">${grinderFor(r.id)}</td></tr>`).join('')}</table>
+        <p style="margin-top:12px">Calibrado para a mó interna (triângulo vermelho) no ${INNER_BURR}: espresso em 1–3 e V60 a partir de 54. As outras posições são estimativas entre essas duas referências; ajuste pelo tempo e pelo gosto. “Limite” indica receita que pede moagem mais grossa que a posição 60.</p></div></details>
       ${S.brews.length?`<button class="btn txt mt" style="color:var(--danger)" data-a="clearHist">Apagar histórico</button>`:''}`;
   }else if(s.t==='brew'){
     const b=S.brews.find(x=>x.id===s.id);if(!b){UI.sheet=null;return''}

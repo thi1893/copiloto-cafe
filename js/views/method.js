@@ -2,13 +2,13 @@ import {M, MACHINE, R, recipesOf} from '../data.js';
 import {ic, ui} from '../icons.js';
 import {dayLabel, esc, tf} from '../util.js';
 import {S} from '../store.js';
-import {line} from '../recipe.js';
+import {gRange, line} from '../recipe.js';
 
 export function vMethod(mid){
   const m=M[mid],rs=recipesOf(mid),fav=S.favs.includes(mid),lastB=S.brews.find(b=>b.method===mid&&R[b.recipeId]);
   const cards=rs.map(r=>`<button class="rcard" data-a="prep" data-r="${r.id}">
       <div class="rc-h"><span class="rc-n">${esc(r.name)}</span><span class="rc-tag">${esc(r.tag||'')}</span></div>
-      <div class="rc-m num"><b>${line(r,r.coffee,r.water,r.ice)}</b> · moedor ${r.grinder[0]}–${r.grinder[1]} · ${r.exp}</div>
+      <div class="rc-m num"><b>${line(r,r.coffee,r.water,r.ice)}</b> · moedor ${gRange(r)} · ${r.exp}</div>
       <div class="rc-p">${esc(r.profile)} · ${r.level}${r.by?' · '+esc(r.by):''}</div></button>`).join('');
   let lastCard='';
   if(lastB){const r=R[lastB.recipeId];

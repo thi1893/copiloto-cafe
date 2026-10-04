@@ -1,8 +1,8 @@
-import {M, R} from '../data.js';
+import {INNER_BURR, M, R} from '../data.js';
 import {ui} from '../icons.js';
 import {clamp, esc, fmtN, fmtR, fmtT} from '../util.js';
 import {S} from '../store.js';
-import {baseRatio, calc} from '../recipe.js';
+import {baseRatio, calc, gRange} from '../recipe.js';
 import {UI} from '../ui.js';
 
 export function gScale(r,g){
@@ -19,7 +19,7 @@ export function vPrep(){
   const waterRow=`<div class="prow"><div class="pl">${r.espresso?'Bebida':'Água'}<small>${r.espresso?'na xícara':r.ice?'quente':'total'}</small></div>
       <div class="stp"><span class="sp"></span><div class="val"><input id="in-water" class="num dyn" data-c="water" value="${c.water}" inputmode="numeric" aria-label="Água em gramas" enterkeyhint="done"><span class="unit">g</span></div><span class="sp"></span></div></div>`;
   const steps=c.steps.filter(s=>!s.end).map(s=>`<li><span class="st-t num">${s.t!=null?fmtT(s.t):'—'}</span><span class="st-a">${esc(s.a)}</span><span class="st-v num">${s.to!=null?s.to+' g':s.add!=null?'+'+s.add+' g':''}</span></li>`).join('');
-  const tips=[...(r.time?[`${r.espresso?'Extração em '+r.exp:'Fim em '+fmtT(r.time[0])+'–'+fmtT(r.time[1])}. Fora disso, o app sugere o ajuste do moedor no final.`]:[]),...(r.tips||[]),'A posição do moedor é ponto de partida: cada café varia de 2 a 4 posições.','Ao trocar de posição, moa e descarte 2–3 g para limpar o pó antigo.'];
+  const tips=[...(r.gMax?[`Esta receita pede moagem mais grossa do que a posição 60 entrega com a mó interna no ${INNER_BURR}. Se drenar devagar ou amargar, suba a mó interna; as posições do espresso mudam junto.`]:[]),...(r.time?[`${r.espresso?'Extração em '+r.exp:'Fim em '+fmtT(r.time[0])+'–'+fmtT(r.time[1])}. Fora disso, o app sugere o ajuste do moedor no final.`]:[]),...(r.tips||[]),'A posição do moedor é ponto de partida: cada café varia de 2 a 4 posições.','Ao trocar de posição, moa e descarte 2–3 g para limpar o pó antigo.'];
   const prep=[`${r.fixed?r.doseNote:fmtN(ctx.dose)+' g de café'} moído na posição ${ctx.grinder}`,
     r.espresso?`Temperatura ${r.temp.toLowerCase()} · pré-infusão ${r.preinf.toLowerCase()}`:`${r.fixed?'Água '+r.waterNote:c.water+' g de água'} · ${r.temp}`,
     ...(c.ice?[`${c.ice} g de gelo no servidor`]:[]),...(c.dil?[`${c.dil} g de água quente para completar`]:[]),...(r.prep||[])];
@@ -29,9 +29,9 @@ export function vPrep(){
     <h1 class="h1" style="margin-top:4px">${esc(r.name)}</h1>
     <p class="desc">${esc(r.desc)}</p>
     <div class="card gcard">
-      <div class="prow"><div class="pl">Moedor<small>posição na sua Breville</small></div>${stepper('grind',ctx.grinder,'')}</div>
+      <div class="prow"><div class="pl">Moedor<small>mó interna no ${INNER_BURR}</small></div>${stepper('grind',ctx.grinder,'')}</div>
       ${gScale(r,ctx.grinder)}
-      <p class="g-note">${esc(r.grind)} · a receita pede <b class="num">${r.grinder[0]}–${r.grinder[1]}</b>${ctx.grinder<r.grinder[0]?' · você está abaixo':ctx.grinder>r.grinder[1]?' · você está acima':''}</p>
+      <p class="g-note">${esc(r.grind)} · ${r.gMax?`use <b class="num">60</b>, o limite com a mó interna no ${INNER_BURR}`:`a receita pede <b class="num">${gRange(r)}</b>${ctx.grinder<r.grinder[0]?' · você está abaixo':ctx.grinder>r.grinder[1]?' · você está acima':''}`}</p>
     </div>
     <div class="card params">
       <div class="prow"><div class="pl">Café${r.espresso?'<small>cesto duplo 15–18 g</small>':''}</div>${r.fixed?fixedVal(r.doseNote,''):stepper('dose',ctx.dose,'g')}</div>

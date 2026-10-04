@@ -30,3 +30,4 @@ export function ctxFromBrew(b){
   const latest=S.brews.find(x=>x.recipeId===b.recipeId);
   return latest&&latest.id===b.id?makeCtx(b.recipeId):makeCtx(b.recipeId,{dose:b.dose,ratio:b.ratio,grinder:b.grinder});
 }
+export const gRange=r=>r.grinder[0]===r.grinder[1]?String(r.grinder[0]):r.grinder[0]+'–'+r.grinder[1];

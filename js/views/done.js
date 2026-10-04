@@ -1,4 +1,6 @@
 import {M, R, RATE_L, TASTE} from '../data.js';
+
+const atLimit=g=>g<=1?' Você já está na posição 1: aumente a dose em 0,5 g ou desça a mó interna um passo.':' Você já está na posição 60: para moer mais grosso, suba a mó interna.';
 import {cap, clamp, esc, fmtR, fmtT, r1, tf} from '../util.js';
 import {S} from '../store.js';
 import {line} from '../recipe.js';
@@ -15,6 +17,7 @@ export function vDone(){
     if(b.time<fast&&fast>0){k='fast';title=r.espresso?'Extração rápida':'Drenou rápido';body=`Esperado ${rg}. Moa mais fino: ${d} ${d>1?'posições':'posição'} abaixo.${r.espresso?' Confira se a dose está certa.':''}`;g=clamp(b.grinder-d,1,60)}
     else if(b.time>slow){k='slow';title=r.espresso?'Extração lenta':'Drenou devagar';body=`Esperado ${rg}. Moa mais grosso: ${d} ${d>1?'posições':'posição'} acima.`;g=clamp(b.grinder+d,1,60)}
     else if(b.time<lo||b.time>hi){k='near';title=`Um pouco ${b.time<lo?'rápido':'lento'}`;body=`Esperado ${rg}. Ajuste só se o sabor pedir.`}
+    if(g===b.grinder){body=`Esperado ${rg}.`+atLimit(g);g=null}
     const key='t'+g;
     verdict=`<div class="verdict"><span class="vi ${k==='ok'?'ok':''}">${k==='ok'?'✓':k==='fast'?'↓':k==='slow'?'↑':'~'}</span><div><b>${title}</b>${body}
       ${g!=null?`<div><button class="apply ${UI.applied[key]?'done':''}" data-a="apply" data-g="${g}" data-key="${key}">${UI.applied[key]?'✓ Moedor '+g+' na próxima':'Usar moedor '+g+' na próxima'}</button></div>`:''}</div></div>`;
@@ -22,9 +25,9 @@ export function vDone(){
   const tl=TASTE[fam],sel=tl.find(t=>t.k===b.taste);
   let advice='';
   if(sel){
-    const g=sel.g!=null?clamp(b.grinder+sel.g,1,60):null,rr=sel.r!=null?r1(clamp(b.ratio+sel.r,1,25)):null,key='s'+sel.k;
+    let g=sel.g!=null?clamp(b.grinder+sel.g,1,60):null;const stuck=g===b.grinder;if(stuck)g=null;const rr=sel.r!=null?r1(clamp(b.ratio+sel.r,1,25)):null,key='s'+sel.k;
     const parts=[g!=null?'moedor '+g:null,rr!=null?'proporção '+fmtR(rr):null].filter(Boolean).join(' e ');
-    advice=`<div class="advice"><b>${sel.l}.</b> ${sel.a}${parts?`<div><button class="apply ${UI.applied[key]?'done':''}" data-a="apply" ${g!=null?`data-g="${g}"`:''} ${rr!=null?`data-ratio="${rr}"`:''} data-key="${key}">${UI.applied[key]?'✓ '+cap(parts)+' na próxima':'Usar '+parts+' na próxima'}</button></div>`:''}</div>`;
+    advice=`<div class="advice"><b>${sel.l}.</b> ${sel.a}${stuck?atLimit(b.grinder):''}${parts?`<div><button class="apply ${UI.applied[key]?'done':''}" data-a="apply" ${g!=null?`data-g="${g}"`:''} ${rr!=null?`data-ratio="${rr}"`:''} data-key="${key}">${UI.applied[key]?'✓ '+cap(parts)+' na próxima':'Usar '+parts+' na próxima'}</button></div>`:''}</div>`;
   }
   return`<div class="wrap">
     <div class="done-k">완성</div>
