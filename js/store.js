@@ -1,0 +1,9 @@
+/* Estado persistente. Tudo fica no aparelho (localStorage); não há conta nem servidor. */
+export const KEY='cafe.app.v1';
+export function fresh(){return{v:1,onboarded:false,favs:['v60','espresso'],brews:[],mem:{},methodLast:{},prefs:{sound:true,countdown:true,wake:true,vibe:true,theme:'auto'},active:null}}
+export function load(){
+  try{const s=Object.assign(fresh(),JSON.parse(localStorage.getItem(KEY)||'null')||{});s.prefs=Object.assign(fresh().prefs,s.prefs||{});return s}
+  catch(e){return fresh()}
+}
+export const S=load();
+export function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
