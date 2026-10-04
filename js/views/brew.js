@@ -33,7 +33,7 @@ export function vBrew(){
   else if(s.manual)actions=noTimer?`<button class="btn" data-a="next">${i===st.length-1?'Concluir':'Feito'}</button>`:`<div class="b-row"><button class="btn ghost sq" data-a="pause" aria-label="Pausar">${ui('pause')}</button><button class="btn" data-a="next">${i===st.length-1?'Concluir':'Feito'}</button></div>`;
   else actions=`<button class="btn ghost" data-a="pause">${ui('pause')}Pausar</button>`;
   const fl=UI.flash;UI.flash=false;
-  return`<div class="brew" role="main">
+  return`<div class="brew${fl?' pulse':''}" role="main">
     <div class="b-top"><button class="ibtn edge" data-a="cancel" aria-label="Cancelar preparo">${ui('close')}</button><div class="b-title">${m.name} · ${esc(r.name)}</div><div class="b-step num">${pos}/${vis.length}</div></div>
     <div class="b-main ${fl?'flash':''}" aria-live="polite">${scene(r,s,'b-scene')}${main}${timer}${dots}${next}</div>
     ${noTimer?'':'<div class="b-bar"><i id="bBar"></i></div>'}

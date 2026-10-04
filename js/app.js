@@ -2,7 +2,7 @@ import {M, METHODS, PALETTES, R} from './data.js';
 import {$, clamp, fmtT, parseNum, r1, tf, uid} from './util.js';
 import {S, save} from './store.js';
 import {baseRatio, calc, ctxFromBrew, doseStep, makeCtx, memKey, ratioStep} from './recipe.js';
-import {audio, buzz, keepAwake, snd, tone} from './feedback.js';
+import {audio, audioSession, audioStarted, buzz, chime, keepAwake, quiet, snd} from './feedback.js';
 import {UI, nav} from './ui.js';
 import {elapsedMs, stepIdx} from './engine.js';
 import {vHome} from './views/home.js';
@@ -33,7 +33,7 @@ function finishBrew(sec){
     judge:a.shotSec!=null||!!(last&&(last.drain||last.shot)),rating:0,taste:null,note:''};
   S.brews.unshift(b);if(S.brews.length>400)S.brews.length=400;
   const k=memKey(r.id),m=S.mem[k]||(S.mem[k]={});m.dose=ctx.dose;m.ratio=ctx.ratio;m.g=ctx.grinder;
-  S.methodLast[r.method]=r.id;S.active=null;save();keepAwake(false);snd.done();
+  S.methodLast[r.method]=r.id;S.active=null;save();keepAwake(false);snd.done();quiet();
   UI.done=b.id;UI.applied={};UI.noteOpen=false;nav.stack=[{v:'home'}];render();window.scrollTo(0,0);
 }
 function tick(){
@@ -51,7 +51,9 @@ function tick(){
   const bar=$('#bBar');if(bar){const endS=r.time?r.time[1]:(st[st.length-1].t||60);bar.style.width=Math.min(100,el/10/endS)+'%'}
 }
 setInterval(tick,200);
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.active){keepAwake(true);UI.lastIdx=-2;tick()}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.active){keepAwake(true);if(S.prefs.sound)audio();UI.lastIdx=-2;tick()}});
+/* O iPhone interrompe o áudio ao bloquear a tela; qualquer toque durante o preparo o retoma. */
+document.addEventListener('pointerdown',()=>{if(S.active&&S.prefs.sound&&audioStarted())audio()},{passive:true});
 
 /* ---------- navegação ---------- */
 function go(v,p={}){nav.stack.push({v,...p});try{history.pushState({d:nav.stack.length},'')}catch(e){}render();window.scrollTo(0,0)}
@@ -119,7 +121,7 @@ const A={
     if(st[i].shot&&a.shotSec==null)a.shotSec=Math.floor(el/1000);
     if(i>=st.length-1||st[i+1].end){finishBrew(elapsedMs(a)/1000);return}
     a.floor=i+1;UI.lastIdx=stepIdx(a,elapsedMs(a));UI.flash=true;save();buzz(20);render()},
-  cancel:()=>ask({title:'Cancelar preparo?',body:'O cronômetro para e este preparo não é salvo.',ok:'Continuar preparo',no:'Cancelar preparo',swap:1,onNo:()=>{S.active=null;save();keepAwake(false)}}),
+  cancel:()=>ask({title:'Cancelar preparo?',body:'O cronômetro para e este preparo não é salvo.',ok:'Continuar preparo',no:'Cancelar preparo',swap:1,onNo:()=>{S.active=null;save();keepAwake(false);quiet()}}),
   cOk:()=>{const c=UI.confirm;UI.confirm=null;if(c&&!c.swap&&c.onOk)c.onOk();render()},
   cNo:()=>{const c=UI.confirm;UI.confirm=null;if(c&&c.swap&&c.onNo)c.onNo();render()},
   rate:d=>{const b=S.brews.find(x=>x.id===UI.done);b.rating=b.rating===+d.v?0:+d.v;save();render()},
@@ -137,7 +139,8 @@ const A={
   delBrew:d=>{const i=S.brews.findIndex(x=>x.id===d.id);if(i<0)return;const[b]=S.brews.splice(i,1);UI.sheet=null;save();
     toast('Preparo excluído',()=>{S.brews.splice(i,0,b);save()})},
   undo:()=>{const t=UI.toast;UI.toast=null;if(t&&t.undo)t.undo();render()},
-  pref:d=>{S.prefs[d.k]=!S.prefs[d.k];if(d.k==='sound'&&S.prefs.sound){audio();tone(880,.4,.1)}save();render()},
+  pref:d=>{S.prefs[d.k]=!S.prefs[d.k];if(d.k==='silent')audioSession();if(d.k==='sound'&&S.prefs.sound)chime();save();render()},
+  testSound:()=>{audioSession();chime();if(!S.active)quiet()},
   theme:d=>{S.prefs.theme=d.v;save();render()},
   palette:d=>{S.prefs.palette=d.v;save();render()},
   clearHist:()=>ask({title:'Apagar todo o histórico?',body:'Seus ajustes de moedor continuam salvos.',ok:'Apagar histórico',no:'Cancelar',danger:1,onOk:()=>{S.brews=[];UI.sheet=null;save()}}),

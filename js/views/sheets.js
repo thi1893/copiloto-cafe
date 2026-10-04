@@ -4,6 +4,7 @@ import {dayLabel, dotsTxt, esc, fmtR, hm, tf} from '../util.js';
 import {S} from '../store.js';
 import {gRange, grinderFor, line} from '../recipe.js';
 import {UI} from '../ui.js';
+import {hasAudioSession} from '../feedback.js';
 
 export function sheetHtml(){
   const s=UI.sheet;if(!s)return'';let body='';
@@ -13,7 +14,7 @@ export function sheetHtml(){
       <div class="sec-t" style="margin:8px 2px 8px">métodos na tela inicial</div>
       <div class="chips">${METHODS.filter(m=>m.id!=='drinks').map(m=>`<button class="chip ${S.favs.includes(m.id)?'on':''}" data-a="favSet" data-m="${m.id}" aria-pressed="${S.favs.includes(m.id)}">${m.name}</button>`).join('')}</div>
       <div class="sec-t" style="margin:26px 2px 4px">durante o preparo</div>
-      ${sw('sound','Som','Aviso suave a cada nova etapa')}${sw('countdown','Contagem regressiva','Bipe curto nos 3 s antes da próxima etapa')}${sw('wake','Manter tela ligada','Durante o preparo')}${'vibrate'in navigator?sw('vibe','Vibração',''):''}
+      ${sw('sound','Som','Aviso a cada nova etapa')}${hasAudioSession()?sw('silent','Tocar no modo silencioso','Ignora a chave de silencioso do iPhone; pode pausar a música de outros apps'):''}<div class="srow" style="min-height:52px"><div class="row-m"><div class="row-s">O volume segue os botões laterais do iPhone</div></div><button class="rbtn" data-a="testSound">Testar som</button></div>${sw('countdown','Contagem regressiva','Bipe curto nos 3 s antes da próxima etapa')}${sw('wake','Manter tela ligada','Durante o preparo')}${'vibrate'in navigator?sw('vibe','Vibração',''):''}
       <div class="sec-t" style="margin:22px 2px 0">aparência</div>
       <div class="seg">${[['auto','Automático'],['light','Claro'],['dark','Escuro']].map(x=>`<button class="${S.prefs.theme===x[0]?'on':''}" data-a="theme" data-v="${x[0]}">${x[1]}</button>`).join('')}</div>
       <div class="sec-t" style="margin:18px 2px 0">cores</div>

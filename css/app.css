@@ -204,6 +204,8 @@ input,textarea{font:inherit;color:inherit;letter-spacing:inherit}
 .star.on svg{fill:currentColor}
 /* brew */
 .brew{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg);padding:calc(env(safe-area-inset-top,0px) + 6px) 20px calc(env(safe-area-inset-bottom,0px) + 14px);max-width:480px;margin:0 auto}
+.brew.pulse{animation:b-pulse 1.1s ease-out}
+@keyframes b-pulse{0%{background:var(--accent)}100%{background:var(--bg)}}
 .b-top{display:flex;align-items:center;justify-content:space-between;min-height:48px}
 .b-title{font-size:13px;color:var(--ink-2);text-align:center;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .b-step{width:44px;text-align:right;font-size:13px;color:var(--ink-3)}
